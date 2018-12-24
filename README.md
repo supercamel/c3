@@ -1,8 +1,8 @@
 # C3 - Camel's C2 Link Library
 
-C3 is a system for passing messages between an operator and a remote machine (local and remote).
+C3 is a system for passing messages between two machines (local and remote).
 C3 was created to ease and partially automate the programming of C2 (command and
-control) systems in robotics projects.
+		control) systems in robotics projects. 
 
 C3 messages can contain any combination of integers, strings, byte lists and floats. C3 can
 also be used to define enumerations and can send enum types too.
@@ -13,21 +13,21 @@ automates the extraction of settings to it.
 
 C3 has these features
 <ul>
-	<li>C++ (header only) and Javascript APIs</li>
-	<li>Easy to use</li>
-	<li>Checksums and acknowledge fields ensure data integrity</li>
-	<li>Automatic extraction of settings from messages</li>
-	<li>Lean code generation</li>
+<li>C++ (header only) and Javascript APIs</li>
+<li>Easy to use</li>
+<li>Checksums and acknowledge fields ensure data integrity</li>
+<li>Automatic extraction of settings from messages</li>
+<li>Lean code generation</li>
 </ul>
 
 
 # The Process
 
 <ul>
-	<li>Create a JSON packets file that defines enums and messages</li>
-	<li>Use the Python script to generate a C++ API</li>
-	<li>Include the generated C++ header files in your embedded microcontroller project</li>
-	<li>Use either the C++ header files, or NodeJS with the Javascript API to communicate with your device</li>
+<li>Create a JSON packets file that defines enums and messages</li>
+<li>Use the Python script to generate a C++ API</li>
+<li>Include the generated C++ header files in your embedded microcontroller project</li>
+<li>Use either the C++ header files, or NodeJS with the Javascript API to communicate with your device</li>
 </ul>
 
 
@@ -44,83 +44,94 @@ of the blinky lights. There's also a set_delay setting message that could set th
 blinky.json :
 ```
 {
-    "enums": [{
-            "title": "PATTERN",
-            "fields": [
-                "BLINKY",
-                "CHASE",
-                "FLIP_FLOP",
-                "UNKNOWN"
-            ]
-        }
-    ],
-    "packets": [{
-            "title": "telemetry",
-            "setting": "false",
-            "owner": "remote",
-            "ack_required": "false",
-            "fields": [{
-                    "name": "ticks",
-                    "type": "uint32_t"
-                },
-                {
-                    "name": "red",
-                    "type": "float"
-                },
-                {
-                    "name": "green",
-                    "type": "float"
-                },
-                {
-                    "name": "blue",
-                    "type": "float"
-                },
-                {
-                    "name": "pattern",
-                    "type": "PATTERN"
-                }
-            ]
-        },
-        {
-            "title": "set_color",
-            "setting": "false",
-            "owner": "local",
-            "ack_required": "true",
-            "fields": [{
-                    "name": "red",
-                    "type": "float"
-                },
-                {
-                    "name": "green",
-                    "type": "float"
-                },
-                {
-                    "name": "blue",
-                    "type": "float"
-                }
-            ]
-        },
-        {
-            "title": "set_pattern",
-            "setting": "false",
-            "owner": "local",
-            "ack_required": "true",
-            "fields": [{
-                "name": "pattern",
-                "type": "PATTERN"
-            }]
-        },
-        {
-            "title": "set_delay",
-            "setting": "true",
-            "owner": "local",
-            "ack_required": "true",
-            "fields": [{
-                "name": "delay",
-                "type": "uint32_t"
-            }]
-        }
-    ]
+	"project": {
+		"title": "Blinky",
+			"description": "The protocol description for a blinky light gadget.",
+			"version": "1.0"
+	},
+		"enums": [{
+			"title": "PATTERN",
+			"description": "The lighting pattern",
+			"fields": [
+				"BLINKY",
+			"CHASE",
+			"FLIP_FLOP",
+			"UNKNOWN"
+			]
+		},
+		{
+			"title": "COLOR",
+			"description": "light colours",
+			"fields": [
+				"RED",
+			"GREEN",
+			"BLUE"
+			]
+		}
+		],
+		"packets": [{
+			"title": "telemetry",
+			"description": "periodic telemetry",
+			"setting": "false",
+			"owner": "remote",
+			"ack_required": "false",
+			"fields": [{
+				"name": "ticks",
+				"type": "uint32_t"
+			},
+			{
+				"name": "red",
+				"type": "COLOR"
+			},
+			{
+				"name": "green",
+				"type": "COLOR"
+			},
+			{
+				"name": "blue",
+				"type": "COLOR"
+			},
+			{
+				"name": "pattern",
+				"type": "PATTERN"
+			}
+			]
+		},
+		{
+			"title": "set_color",
+			"description": "Sets the light color",
+			"setting": "false",
+			"owner": "local",
+			"ack_required": "true",
+			"fields": [{
+				"name": "color",
+				"type": "COLOR"
+			}
+			]
+		},
+		{
+			"title": "set_pattern",
+			"description": "sets the pattern type",
+			"setting": "false",
+			"owner": "local",
+			"ack_required": "true",
+			"fields": [{
+				"name": "pattern",
+				"type": "PATTERN"
+			}]
+		},
+		{
+			"title": "set_delay",
+			"description": "sets the speed of the light blinks",
+			"setting": "true",
+			"owner": "local",
+			"ack_required": "true",
+			"fields": [{
+				"name": "delay",
+				"type": "uint32_t"
+			}]
+		}
+		]
 }
 
 ```
@@ -128,63 +139,69 @@ blinky.json :
 # Generating A C++ API
 
 <ul>
-	<li>Make sure you have Python3 installed. </li>
-	<li>Run `./builder.py blinky.json` </li>
-	<li>The C++ API will be created in ./out </li>
+<li>Make sure you have Python3 installed. </li>
+<li>Run `./builder.py blinky.json` </li>
+<li>The C++ API will be created in ./c3 </li>
 </ul>
 
-# Example C++ Remote Machine
+# Example C++ (Arduino) Remote Machine
 
 The generated C++ API depends on [etk](https://github.com/supercamel/EmbeddedToolKit)
 so you will need to get that.
 
 ```
-#include <iostream>
-#include "serial.h"
-#include "../c3/c3.h"
+#include <c3.h>
 
-using namespace std;
+typedef ccc::C3Link<class Coms, ccc::REMOTE> C3;
 
-
-class Remote : public ccc::C3Link<Remote, ccc::REMOTE>
+class Coms : public C3
 {
-public:
-	//remote must implement handlers for ALL packets owned by local
-	void set_color_pack_handler(auto& pack)
-	{
-		cout << "setting color to: " << pack.red << " " << pack.green << " " << pack.blue << endl;
-	}
+	public:
 
-	void set_pattern_pack_handler(auto& pack)
-	{
-		cout << "setting pattern to: " << pack.pattern << endl;
-	}
+	private:
+		friend C3;
 
-	void on_setting_changed(uint16_t msg_id)
-	{
-		cout << "msg id: " << (int)msg_id << " has changed a setting" << endl;
-		cout << "delay is now: " << ccc::Settings::get().delay << endl;
-	}
+		void set_color_pack_handler(ccc::set_color_pack& pack) {
+			auto color = pack.color;
+			// do something to set the color
+		}
+
+		void set_pattern_pack_handler(ccc::set_pattern_pack& pack) {
+			auto pattern = pack.pattern;
+			// do something with pattern
+		}
+
+		void on_setting_changed(uint16 msg_id) {
+			auto& settings = ccc::Settings::get();
+			// save settings to flash/eeprom
+		}
+		void put(char c) {
+			Serial.write(c);
+		}
+
+		uint8 get() {
+			return Serial.read();
+		}
+
+		bool available() {
+			return (Serial.available() != 0);
+		}
+
 };
 
-int main()
-{
-	Remote remote;
+Coms coms;
 
-	while(true)
-	{
-		while(Serial.available())
-			remote.read(Serial.get_byte());
-
-		auto telem_pack = remote.create_packet<ccc::telem_pack>();
-		if(telem_pack)
-			telem_pack->ticks = get_systick();
-
-		remote.serialise([](char c) { Serial.send_byte(c); });
-
-		sleep_ms(100);
-	}
+void setup() {
+	Serial.begin(57600);
 }
+
+void loop() {
+	auto& settings = ccc::Settings::get();
+	// do something with settings.delay
+	coms.read();
+	coms.serialise();
+}
+
 
 ```
 
@@ -200,11 +217,23 @@ using namespace std;
 
 class Local : public ccc::C3Link<Local, ccc::LOCAL>
 {
-public:
-	void telemetry_pack_handler(auto& pack)
-	{
-		cout << "ticks: " << pack.ticks << endl;
-	}
+	public:
+		void telemetry_pack_handler(auto& pack)
+		{
+			cout << "ticks: " << pack.ticks << endl;
+		}
+
+		void put(char c) {
+			Serial.write(c);
+		}
+
+		uint8 get() {
+			return Serial.read();
+		}
+
+		bool available() {
+			return (Serial.available() != 0);
+		}
 };
 
 int main()
@@ -214,7 +243,8 @@ int main()
 	//creates a packet for sending, and returns a pointer to it.
 	auto color_pack = local.create_packet<ccc::set_color>();
 	//ALWAYS check for a nullptr. C3 uses a small memory pool to store packets.
-	if(color_pack)
+	// it may run out of memory!!
+	if(color_pack != nullptr)
 	{
 		color_pack->red = 1.0;
 		color_pack->green = 0.5;
@@ -223,11 +253,8 @@ int main()
 
 	while(true)
 	{
-		while(Serial.available())
-			remote.read(Serial.get_byte());
-
-		remote.serialise([](char c) { Serial.send_byte(c); });
-
+		local.read();
+		local.serialise();
 		sleep_ms(100);
 	}
 }
@@ -235,3 +262,5 @@ int main()
 ```
 
 # NodeJS Example
+
+. . . on the way
