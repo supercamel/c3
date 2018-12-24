@@ -1,0 +1,36 @@
+{
+	"project": {
+		"title": "Servo Mover",
+		"description": "The protocol description for a servo mover.",
+		"version": "1.0"
+	},
+	"enums": [{
+		"title": "SERVO_CHANNEL",
+		"description": "RC servo channels",
+		"fields": [
+			"AILERON",
+			"ELEVATOR",
+			"THROTTLE",
+			"RUDDER",
+			"CH5"
+		]
+	}
+	],
+	"packets": [{
+		"title": "servo_position",
+		"description": "",
+		"setting": "false",
+		"owner": "local",
+		"ack_required": "false",
+		"fields": [{
+		    "name": "channel",
+		    "type": "SERVO_CHANNEL"
+		},
+		{
+			"name": "angle",
+			"type": "float"
+		}
+		]
+	}
+	]
+}

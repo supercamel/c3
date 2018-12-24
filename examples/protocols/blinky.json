@@ -1,0 +1,90 @@
+{
+    "project": {
+		"title": "Blinky",
+		"description": "The protocol description for a blinky light gadget.",
+		"version": "1.0"
+	},
+    "enums": [{
+            "title": "PATTERN",
+			"description": "The lighting pattern",
+            "fields": [
+                "BLINKY",
+                "CHASE",
+                "FLIP_FLOP",
+                "UNKNOWN"
+            ]
+        },
+        {
+            "title": "COLOR",
+			"description": "light colours",
+            "fields": [
+                "RED",
+                "GREEN",
+                "BLUE"
+            ]
+        }
+    ],
+    "packets": [{
+            "title": "telemetry",
+			"description": "periodic telemetry",
+            "setting": "false",
+            "owner": "remote",
+            "ack_required": "false",
+            "fields": [{
+                    "name": "ticks",
+                    "type": "uint32_t"
+                },
+                {
+                    "name": "red",
+                    "type": "COLOR"
+                },
+                {
+                    "name": "green",
+                    "type": "COLOR"
+                },
+                {
+                    "name": "blue",
+                    "type": "COLOR"
+                },
+                {
+                    "name": "pattern",
+                    "type": "PATTERN"
+                }
+            ]
+        },
+        {
+            "title": "set_color",
+			"description": "Sets the light color",
+            "setting": "false",
+            "owner": "local",
+            "ack_required": "true",
+            "fields": [{
+                    "name": "color",
+                    "type": "COLOR"
+                }
+            ]
+        },
+        {
+            "title": "set_pattern",
+			"description": "sets the pattern type",
+            "setting": "false",
+            "owner": "local",
+            "ack_required": "true",
+            "fields": [{
+                "name": "pattern",
+                "type": "PATTERN"
+            }]
+        },
+        {
+            "title": "set_delay",
+			"description": "sets the speed of the light blinks",
+            "setting": "true",
+            "owner": "local",
+            "ack_required": "true",
+            "fields": [{
+                "name": "delay",
+                "type": "uint32_t"
+            }]
+        }
+    ]
+}
